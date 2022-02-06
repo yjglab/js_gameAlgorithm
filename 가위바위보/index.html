@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-weight: 700;
+      }
+      .computer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        width: 75px;
+        height: 75px;
+        background-color: rgb(168, 191, 255);
+        border-radius: 50%;
+        margin-bottom: 20px;
+      }
+      .my {
+        display: flex;
+      }
+      .my div {
+        font-size: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: gray;
+        width: 35px;
+        height: 35px;
+        margin-right: 5px;
+        cursor: grab;
+        transition: all 0.2s ease-in-out;
+        user-select: none;
+      }
+      .my div:hover {
+        background-color: rgb(255, 185, 185);
+      }
+      .my div:active {
+        background-color: rgb(120, 71, 255);
+      }
+    </style>
+  </head>
+  <body>
+    <h4>Computer</h4>
+    <div class="computer"></div>
+
+    <div class="my">
+      <div class="rock">✊</div>
+      <div class="scissors">✌</div>
+      <div class="paper">🖐</div>
+    </div>
+    <br />
+    <div class="log"></div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
