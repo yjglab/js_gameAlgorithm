@@ -1,6 +1,6 @@
 const $screen = document.querySelector(".screen");
 const $timeDiff = document.querySelector(".timeDiff");
-
+const $log = document.querySelector(".log");
 const numArray = Array(4)
   .fill()
   .map((v, i) => i + 1);
@@ -8,6 +8,7 @@ const numArray = Array(4)
 let timeout;
 let startTime, endTime, timeDiff;
 let flag = true;
+const averageArray = [];
 const handleScreenClick = (e) => {
   if (flag === false) return;
   if ($screen.style.backgroundColor === "blue") {
@@ -31,7 +32,11 @@ const handleScreenClick = (e) => {
     timeDiff =
       Math.round((endTime - startTime + Number.EPSILON) * 10000) / 10000;
     $screen.innerHTML = `성공!<br>${timeDiff}초 만에 성공했습니다.`;
+    averageArray.push(timeDiff);
 
+    let averageSpeed =
+      averageArray.reduce((accm, curr) => accm + curr) / averageArray.length;
+    $log.textContent = `평균 속도: ${averageSpeed}초`;
     setTimeout(init, 3000);
   }
 };
