@@ -8,22 +8,17 @@
     <style>
       body {
         font-weight: 700;
-        font-size: 80px;
+        font-size: 130px;
         color: white;
+      }
+      .log {
+        font-size: 40px;
+        color: rgb(61, 61, 61);
       }
       .container {
         display: grid;
         grid-template-columns: 200px 200px 200px;
-        /* grid-template-columns: 1fr 1fr 1fr */
-        /* grid-template-columns: repeat(3, 1fr) */
-        /* grid-template-columns: 200px 1fr */
-        /* grid-template-columns: 100px 200px auto */
-
         grid-template-rows: 200px 200px 200px;
-        /* grid-template-rows: 1fr 1fr 1fr */
-        /* grid-template-rows: repeat(3, 1fr) */
-        /* grid-template-rows: 200px 1fr */
-        /* grid-template-rows: 100px 200px auto */
       }
       .container div {
         margin: 3px 3px;
@@ -46,6 +41,7 @@
       <div class="item"></div>
       <div class="item"></div>
     </div>
+    <span class="log"></span>
     <script src="index.js"></script>
   </body>
 </html>
