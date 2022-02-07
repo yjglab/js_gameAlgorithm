@@ -90,10 +90,12 @@ const handleComputerTurn = () => {
   if ($items[random].textContent === "") {
     setTimeout(() => {
       $items[random].textContent = "X";
+      if (inspectItems(com)) {
+        console.log("컴승리");
+        return;
+      }
       flag = true;
     }, 1000);
-
-    if (inspectItems(com)) console.log("컴 승리!");
   } else handleComputerTurn();
 };
 $items.forEach((item) => item.addEventListener("click", handleItemClick));
