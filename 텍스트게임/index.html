@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-weight: 600;
+      }
+      .mainScreen {
+        background-color: rgb(34, 34, 34);
+        width: 540px;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .startGame {
+        width: 140px;
+        height: 20px;
+        margin-top: 20px;
+      }
+      .myInfo {
+        margin-top: 15px;
+        width: 92%;
+        height: 40px;
+        padding: 10px;
+        background-color: white;
+      }
+      .stats {
+        display: flex;
+      }
+      .stats div {
+        width: 50px;
+        height: 100%;
+      }
+
+      .normalMode {
+        display: none;
+        background-color: rgb(110, 255, 154);
+        width: 25%;
+        padding: 10px;
+        height: 25px;
+        margin-top: 35px;
+      }
+      .fightMode {
+        display: none;
+        background-color: tomato;
+        width: 25%;
+        padding: 10px;
+        height: 25px;
+        margin-top: 35px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="mainScreen">
+      <button class="startGame">게임시작</button>
+      <div class="nameInfo">
+        <form class="form">
+          <span style="color: white">이름을 입력하세요</span>
+          <input class="inputName" type="text" />
+          <button>확인</button>
+        </form>
+      </div>
+      <div class="myInfo">
+        <div class="name"></div>
+        <div class="stats">
+          체력:
+          <div class="hp">100</div>
+          경험치:
+          <div class="exp">0</div>
+          레벨:
+          <div class="level">0</div>
+          현재 모드:
+          <div class="log"></div>
+        </div>
+      </div>
+
+      <div class="normalMode">
+        <button class="nm_adventure">모험</button>
+        <button class="nm_rest">휴식</button>
+        <button class="nm_exit">종료</button>
+      </div>
+      <div class="fightMode">
+        <button class="fm_attack">공격</button>
+        <button class="fm_rest">회복</button>
+        <button class="fm_exit">도망</button>
+      </div>
+    </main>
+
+    <script src="index.js"></script>
+  </body>
+</html>
