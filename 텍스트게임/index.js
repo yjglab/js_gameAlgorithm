@@ -16,6 +16,7 @@ const $fm_heal = document.querySelector(".fm_heal");
 const $fm_exit = document.querySelector(".fm_exit");
 
 const $hp = document.querySelector(".hp");
+const $defense = document.querySelector(".defense");
 const $power = document.querySelector(".power");
 const $exp = document.querySelector(".exp");
 const $level = document.querySelector(".level");
@@ -33,7 +34,8 @@ const colorPack = {
 };
 const my = {
   hp: 100,
-  power: 80,
+  defense: 2,
+  power: 25,
   exp: 0,
   level: 1,
 };
@@ -53,12 +55,11 @@ const handleStart = () => {
   $inputName.value = "abc"; // 완성후 지우기
 };
 
-const updateMyInfo = () => {};
-
 $hp.textContent = my.hp;
 $power.textContent = my.power;
 $exp.textContent = my.exp;
 $level.textContent = my.level;
+$defense.textContent = my.defense;
 
 let adventureFlag = true;
 const handleNmAdventure = () => {
@@ -96,6 +97,7 @@ const handleNmExit = () => {
 const handleNormalMode = () => {
   if (my.hp < 100) restFlag = true;
   adventureFlag = true;
+  healFlag = true;
   $normalMode.style.display = "block";
   $fightMode.style.display = "none";
   $enemyInfo.style.display = "none";
@@ -111,14 +113,15 @@ const handleEnemyAttack = () => {
 
   setTimeout(() => {
     $hp.style.color = colorPack.attacked;
-    my.hp -= enemy.power;
+    console.log(my.defense);
+    my.hp -= enemy.power - my.defense;
     setTimeout(() => ($hp.style.color = colorPack.black), 350);
 
     // 내 체력이 0인 경우
     if (my.hp <= 60) {
       $myInfo.style.backgroundColor = colorPack.lowHp;
     }
-    if (my.hp <= 10) {
+    if (my.hp <= 20) {
       $myInfo.style.backgroundColor = colorPack.death;
     }
     if (my.hp <= 0) {
@@ -133,26 +136,34 @@ const handleEnemyAttack = () => {
     healFlag = true;
   }, 1000);
 };
-
+let enemyAttackRange = 0;
 const increaseExp = () => {
-  let maxExpCount = 0;
+  let expCount = 0;
+  let maxExp = parseInt(100 / my.level); // 현재 레벨에서 적 한명 처치당 증가할 수 있는 최대 exp
+  console.log(maxExp);
   const expInterval = setInterval(() => {
-    maxExpCount += 1;
+    expCount += 1;
     my.exp += 1;
     $exp.textContent = my.exp;
-    if (maxExpCount === 30) {
-      maxExpCount = 0;
-      clearInterval(expInterval);
-      return;
-    }
     if (my.exp === 100) {
+      expCount = 0;
       clearInterval(expInterval);
-      my.power += 15;
-      $power.textContent = my.power;
       my.exp = 0;
       $exp.textContent = 0;
+      my.power += 15;
+      $power.textContent = my.power;
       my.level += 1;
       $level.textContent = my.level;
+      my.defense += 4;
+      $defense.textContent = my.defense;
+      enemyAttackRange += 5;
+      return;
+    }
+    if (expCount === maxExp) {
+      expCount = 0;
+      $exp.textContent = my.exp;
+      clearInterval(expInterval);
+      console.log(my.exp);
       return;
     }
   }, 20);
@@ -186,18 +197,23 @@ const handleFmAttack = () => {
 let healFlag = true;
 const handleFmHeal = () => {
   if (!healFlag) return;
+  healFlag = false;
+  attackFlag = false;
   let maxHealAmount = 0;
   const healInterval = setInterval(() => {
+    if (my.hp >= 20) {
+      $myInfo.style.backgroundColor = colorPack.lowHp;
+    }
     if (my.hp >= 60) {
       $myInfo.style.backgroundColor = colorPack.white;
     }
-    if (my.hp >= 100) {
-      healFlag = false;
+    if (my.hp === 100) {
+      clearInterval(healInterval);
       my.hp = 100;
       $hp.textContent = 100;
+      return;
     }
     if (maxHealAmount === 30) {
-      healFlag = false;
       clearInterval(healInterval);
       return;
     }
@@ -210,13 +226,15 @@ const handleFmHeal = () => {
 const handleFmExit = () => {
   handleNormalMode();
 };
+
 const handleFightMode = () => {
   $fightMode.style.display = "block";
   $normalMode.style.display = "none";
   $enemyInfo.style.display = "block";
 
-  enemy.hp = 100;
-  enemy.power = 45;
+  enemy.hp = Math.floor(Math.random() * 8 + 2) * 10 * my.level; // level * 20 ~ 100
+  enemy.power = Math.floor(Math.random() * 5 + 3) * my.level + enemyAttackRange;
+
   $enemyHp.textContent = enemy.hp;
   $enemyPower.textContent = enemy.power;
   attackFlag = true;
