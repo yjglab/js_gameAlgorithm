@@ -12,10 +12,11 @@
       .mainScreen {
         background-color: rgb(34, 34, 34);
         width: 540px;
-        height: 180px;
+        height: 280px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        position: relative;
       }
       .startGame {
         width: 140px;
@@ -29,29 +30,41 @@
         padding: 10px;
         background-color: white;
       }
-      .stats {
+      .enemyInfo {
+        color: white;
+        margin-top: 15px;
+        width: 92%;
+        height: 40px;
+        padding: 10px;
+        background-color: rgb(122, 50, 255);
+      }
+      .stats,
+      .enemyStats {
         display: flex;
       }
-      .stats div {
+      .stats div,
+      .enemyStats div {
         width: 50px;
         height: 100%;
       }
 
       .normalMode {
         display: none;
+        position: absolute;
         background-color: rgb(110, 255, 154);
         width: 25%;
         padding: 10px;
         height: 25px;
-        margin-top: 35px;
+        bottom: 0;
       }
       .fightMode {
         display: none;
+        position: absolute;
         background-color: tomato;
         width: 25%;
         padding: 10px;
         height: 25px;
-        margin-top: 35px;
+        bottom: 0;
       }
     </style>
   </head>
@@ -69,13 +82,23 @@
         <div class="name"></div>
         <div class="stats">
           체력:
-          <div class="hp">100</div>
+          <div class="hp"></div>
+          공격력:
+          <div class="power"></div>
           경험치:
-          <div class="exp">0</div>
+          <div class="exp"></div>
           레벨:
-          <div class="level">0</div>
-          현재 모드:
-          <div class="log"></div>
+          <div class="level"></div>
+        </div>
+      </div>
+
+      <div class="enemyInfo">
+        <div class="enemyName">무작위 적</div>
+        <div class="enemyStats">
+          체력:
+          <div class="enemyHp"></div>
+          공격력:
+          <div class="enemyPower"></div>
         </div>
       </div>
 
@@ -86,7 +109,7 @@
       </div>
       <div class="fightMode">
         <button class="fm_attack">공격</button>
-        <button class="fm_rest">회복</button>
+        <button class="fm_heal">회복</button>
         <button class="fm_exit">도망</button>
       </div>
     </main>
