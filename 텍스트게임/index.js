@@ -1,10 +1,3 @@
-// 주인공, 이름, 화면 뜨고,
-// 스탯정보, 로그
-// 일반모드 모험 휴식 종료
-// 전투모드 랜덤적 생성. 공격, 체력회복, 도망가기
-// 내 체력이 0이되면 게임오버, 적 체력이 0이되면 적 사망, 경험치 상승,
-// 경험치 일정 이상 되면 레벨업
-
 const $startGame = document.querySelector(".startGame");
 const $myInfo = document.querySelector(".myInfo");
 const $enemyInfo = document.querySelector(".enemyInfo");
@@ -40,7 +33,7 @@ const colorPack = {
 };
 const my = {
   hp: 100,
-  power: 50,
+  power: 80,
   exp: 0,
   level: 1,
 };
@@ -67,14 +60,16 @@ $power.textContent = my.power;
 $exp.textContent = my.exp;
 $level.textContent = my.level;
 
+let adventureFlag = true;
 const handleNmAdventure = () => {
-  if (my.hp === 0) return;
+  if (my.hp === 0 || !adventureFlag) return;
   handleFightMode();
 };
 
 let restFlag = true;
 const handleNmRest = () => {
   if (!restFlag) return;
+  adventureFlag = false;
   const restInterval = setInterval(() => {
     if (my.hp >= 30) {
       $myInfo.style.backgroundColor = colorPack.lowHp;
@@ -84,6 +79,7 @@ const handleNmRest = () => {
     }
     if (my.hp >= 100) {
       restFlag = false;
+      adventureFlag = true;
       my.hp = 100;
       $hp.textContent = my.hp;
       clearInterval(restInterval);
@@ -93,35 +89,13 @@ const handleNmRest = () => {
     $hp.textContent = my.hp;
   }, 20);
 };
-let healFlag = true;
-const handleFmHeal = () => {
-  if (!healFlag) return;
-  let maxHealAmount = 0;
-  const healInterval = setInterval(() => {
-    if (my.hp >= 60) {
-      $myInfo.style.backgroundColor = colorPack.white;
-    }
-    if (my.hp >= 100) {
-      healFlag = false;
-      my.hp = 100;
-      $hp.textContent = 100;
-    }
-    if (maxHealAmount === 30) {
-      healFlag = false;
-      clearInterval(healInterval);
-      return;
-    }
-    my.hp += 1;
-    $hp.textContent = my.hp;
-    maxHealAmount += 1;
-  }, 20);
-  setTimeout(handleEnemyAttack, 2000);
-};
+
 const handleNmExit = () => {
   location.reload(true);
 };
 const handleNormalMode = () => {
   if (my.hp < 100) restFlag = true;
+  adventureFlag = true;
   $normalMode.style.display = "block";
   $fightMode.style.display = "none";
   $enemyInfo.style.display = "none";
@@ -159,6 +133,30 @@ const handleEnemyAttack = () => {
     healFlag = true;
   }, 1000);
 };
+
+const increaseExp = () => {
+  let maxExpCount = 0;
+  const expInterval = setInterval(() => {
+    maxExpCount += 1;
+    my.exp += 1;
+    $exp.textContent = my.exp;
+    if (maxExpCount === 30) {
+      maxExpCount = 0;
+      clearInterval(expInterval);
+      return;
+    }
+    if (my.exp === 100) {
+      clearInterval(expInterval);
+      my.power += 15;
+      $power.textContent = my.power;
+      my.exp = 0;
+      $exp.textContent = 0;
+      my.level += 1;
+      $level.textContent = my.level;
+      return;
+    }
+  }, 20);
+};
 const handleFmAttack = () => {
   if (attackFlag === false) return;
   // 내 턴 공격
@@ -177,13 +175,38 @@ const handleFmAttack = () => {
       $enemyInfo.style.display = "none";
     }, 1000);
     setTimeout(() => handleNormalMode(), 2000);
+
+    // 경험치 상승
+    increaseExp();
     return;
   }
-
   // 상대 턴 공격
   handleEnemyAttack();
 };
-
+let healFlag = true;
+const handleFmHeal = () => {
+  if (!healFlag) return;
+  let maxHealAmount = 0;
+  const healInterval = setInterval(() => {
+    if (my.hp >= 60) {
+      $myInfo.style.backgroundColor = colorPack.white;
+    }
+    if (my.hp >= 100) {
+      healFlag = false;
+      my.hp = 100;
+      $hp.textContent = 100;
+    }
+    if (maxHealAmount === 30) {
+      healFlag = false;
+      clearInterval(healInterval);
+      return;
+    }
+    my.hp += 1;
+    $hp.textContent = my.hp;
+    maxHealAmount += 1;
+  }, 20);
+  setTimeout(handleEnemyAttack, 2000);
+};
 const handleFmExit = () => {
   handleNormalMode();
 };
