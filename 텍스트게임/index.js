@@ -52,7 +52,6 @@ const handleStart = () => {
   $form.style.display = "block";
   $startGame.style.display = "none";
   $inputName.focus();
-  $inputName.value = "abc"; // 완성후 지우기
 };
 
 $hp.textContent = my.hp;
@@ -156,6 +155,9 @@ const increaseExp = () => {
       $level.textContent = my.level;
       my.defense += 4;
       $defense.textContent = my.defense;
+      my.hp = 100;
+      $hp.textContent = my.hp;
+      $myInfo.style.backgroundColor = colorPack.white;
       enemyAttackRange += 5;
       return;
     }
