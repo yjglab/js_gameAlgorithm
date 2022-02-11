@@ -1,11 +1,10 @@
 const $tbody = document.querySelector(".table tbody");
 const $result = document.querySelector(".result");
-
 const mineCnt = 10;
 const row = 10;
 const col = 10;
-
-const dataTableLinear = Array(row * col).fill(false);
+// 데이터 테이블 생성
+const dataTableLinear = Array(row * col).fill(false); // 랜덤 위치 넣을 1차원 배열
 const candidate = Array(row * col)
   .fill()
   .map((v, i) => i);
@@ -15,40 +14,27 @@ for (let _ = 0; _ < mineCnt; _++) {
   const spliceArray = candidate.splice(random, 1);
   shuffle.push(spliceArray[0]);
 }
-const screenTable = [];
-
 const dataTable = [];
 for (let i of shuffle) {
   dataTableLinear[i] = true; // 마인: true
 }
 for (let _ = 0; _ < row; _++) {
-  dataTable.push(dataTableLinear.splice(0, 10));
+  dataTable.push(dataTableLinear.splice(0, row)); // 2차원으로 변경
 }
-console.log(dataTable);
-
+// 스크린 테이블 생성
 for (let i = 0; i < row; i++) {
   const $tr = document.createElement("tr");
   for (let j = 0; j < col; j++) {
     const $td = document.createElement("td");
-    if (dataTable[i][j] === true) {
-      // 끝나고 지우기
-      $td.textContent = "X";
-      $td.style.color = "red";
-    }
+    // if (dataTable[i][j] === true) {
+    //   // 끝나고 지우기 (마인확인용)
+    //   $td.textContent = "X";
+    //   $td.style.color = "red";
+    // }
     $tr.appendChild($td);
   }
   $tbody.appendChild($tr);
 }
-
-// let tableInfo = Array.prototype.map.call(
-//   $tbody.querySelectorAll("tr"),
-//   function (tr) {
-//     return Array.prototype.map.call(tr.querySelectorAll("td"), function (td) {
-//       return td.textContent;
-//     });
-//   }
-// );
-
 const $tds = document.querySelectorAll("td");
 const checkMinesIndex = (rowIdx, colIdx) => {
   if (rowIdx < 0 || colIdx < 0 || rowIdx >= row || colIdx >= col) return 0;
@@ -57,6 +43,7 @@ const checkMinesIndex = (rowIdx, colIdx) => {
   }
   return 0;
 };
+// 클릭한 td의 주변 지뢰 개수를 카운트
 const checkMinesNumber = (target) => {
   const rowIdx = target.parentNode.rowIndex;
   const colIdx = target.cellIndex;
@@ -72,28 +59,20 @@ const checkMinesNumber = (target) => {
     checkMinesIndex(rowIdx + 1, colIdx + 1);
   return cnt;
 };
+// 빈칸을 누르면 탐색을 통해 모든 빈칸을 오픈
 const additionalOpenCheck = (rowIdx, colIdx) => {
   if (rowIdx < 0 || colIdx < 0 || rowIdx >= row || colIdx >= col) return;
-  if (
-    $tbody.querySelectorAll("tr")[rowIdx].querySelectorAll("td")[colIdx]
-      .classList.value === "opened"
-  )
-    return;
-  const number = checkMinesNumber(
-    $tbody.querySelectorAll("tr")[rowIdx].querySelectorAll("td")[colIdx]
-  );
+  const td = $tbody.querySelectorAll("tr")[rowIdx].querySelectorAll("td")[
+    colIdx
+  ];
+  if (td.classList.value === "opened") return;
+  const number = checkMinesNumber(td);
   if (number > 0) {
-    $tbody.querySelectorAll("tr")[rowIdx].querySelectorAll("td")[
-      colIdx
-    ].textContent = number;
-    $tbody.querySelectorAll("tr")[rowIdx].querySelectorAll("td")[
-      colIdx
-    ].classList = "opened";
+    td.textContent = number;
+    td.classList = "opened";
   }
   if (number === 0) {
-    $tbody.querySelectorAll("tr")[rowIdx].querySelectorAll("td")[
-      colIdx
-    ].classList = "opened";
+    td.classList = "opened";
     additionalOpenCheck(rowIdx - 1, colIdx);
     additionalOpenCheck(rowIdx + 1, colIdx);
     additionalOpenCheck(rowIdx, colIdx - 1);
@@ -102,26 +81,40 @@ const additionalOpenCheck = (rowIdx, colIdx) => {
   }
   return;
 };
+let clickFlag = true;
 const handleClickTd = (e) => {
-  if (e.target.classList.value === "opened") return;
+  if (e.target.classList.value === "opened" || !clickFlag) return;
 
   const rowIdx = e.target.parentNode.rowIndex;
   const colIdx = e.target.cellIndex;
   if (dataTable[rowIdx][colIdx] === true) {
     // 마인이라면
-    console.log("지뢰");
+    e.target.textContent = "X";
+    $result.textContent = "게임오버";
+    // 모든 마인 디스플레이
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < col; j++) {
+        if (dataTable[i][j] === true) {
+          const td = $tbody.querySelectorAll("tr")[i].querySelectorAll("td")[j];
+          td.className = "opened";
+          td.textContent = "X";
+          td.style.color = "red";
+        }
+      }
+    }
+    clickFlag = false;
+    $tds.forEach((td) =>
+      td.removeEventListener("contextmenu", handleClickContextMenu)
+    );
     return;
   }
-  // 만약 flag or question이라면 return
-
-  //
   const minesNumber = checkMinesNumber(e.target);
-  console.log(e.target);
   if (minesNumber > 0) {
     // 마인 개수 감지가 된다면
     e.target.textContent = minesNumber;
     e.target.className = "opened";
   } else if (minesNumber === 0) {
+    // 빈칸이라면 dfs실행
     e.target.className = "opened";
     additionalOpenCheck(rowIdx - 1, colIdx);
     additionalOpenCheck(rowIdx + 1, colIdx);
@@ -129,4 +122,20 @@ const handleClickTd = (e) => {
     additionalOpenCheck(rowIdx, colIdx + 1);
   }
 };
+const handleClickContextMenu = (e) => {
+  e.preventDefault();
+  clickFlag = false;
+  if (e.target.className === "opened") return;
+  if (e.target.className === "flag") {
+    e.target.className = "question";
+  } else if (e.target.className === "question") {
+    e.target.classList.remove("question");
+    clickFlag = true;
+  } else {
+    e.target.className = "flag";
+  }
+};
 $tds.forEach((td) => td.addEventListener("click", handleClickTd));
+$tds.forEach((td) =>
+  td.addEventListener("contextmenu", handleClickContextMenu)
+);
