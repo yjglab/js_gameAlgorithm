@@ -26,7 +26,7 @@ for (let i = 0; i < shuffle.length; i++) {
 }
 let cardClickFlag = false;
 let clickedCards = [];
-let matchedCard = [];
+let matchedCard = 0;
 const notMatchedCardFlip = (card1, card2) => {
   cardClickFlag = false;
   setTimeout(() => {
@@ -38,9 +38,9 @@ const notMatchedCardFlip = (card1, card2) => {
 const handleCardClick = (e) => {
   if (!cardClickFlag) return;
   e.target.parentNode.classList.toggle("is-flipped");
-  clickedCards.push(e.currentTarget.childNodes[3]);
-  clickedCards.forEach((card) =>
-    card.parentNode.removeEventListener("click", handleCardClick)
+  clickedCards.push(e.currentTarget.childNodes[3]); // .card__face--front
+  clickedCards.forEach(
+    (card) => card.parentNode.removeEventListener("click", handleCardClick) // .card
   );
   // 열린 2장의 카드 비교
   if (
@@ -49,9 +49,11 @@ const handleCardClick = (e) => {
       clickedCards[1].style.backgroundColor
   ) {
     console.log("일치");
-    clickedCards[0].parentNode.removeEventListener("click", handleCardClick);
-    clickedCards[1].parentNode.removeEventListener("click", handleCardClick);
-    matchedCard.push(clickedCards[0], clickedCards[1]);
+    clickedCards.forEach((card) =>
+      card.parentNode.removeEventListener("click", handleCardClick)
+    );
+
+    matchedCard += 2;
     clickedCards = [];
     cardClickFlag = false;
     setTimeout(() => {
@@ -63,11 +65,10 @@ const handleCardClick = (e) => {
     notMatchedCardFlip(clickedCards[0].parentNode, clickedCards[1].parentNode);
     clickedCards.forEach((card) =>
       card.parentNode.addEventListener("click", handleCardClick)
-    );
+    ); // [0], [1]
     clickedCards = [];
   }
-  console.log(matchedCard.length);
-  if (matchedCard.length === 12) {
+  if (matchedCard === 12) {
     endTime = new Date().getTime() / 1000;
     let timeDiff =
       Math.round((endTime - startTime + Number.EPSILON) * 10000) / 10000;
@@ -88,7 +89,7 @@ handleAllCardFlip();
 const init = () => {
   setTimeout(() => {
     handleAllCardFlip();
-  }, 2000);
+  }, 3000);
   setTimeout(() => {
     cardClickFlag = true;
     startTime = new Date().getTime() / 1000;
