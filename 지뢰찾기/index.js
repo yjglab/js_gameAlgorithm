@@ -124,13 +124,13 @@ const handleClickTd = (e) => {
 };
 const handleClickContextMenu = (e) => {
   e.preventDefault();
-  clickFlag = false;
+  e.target.removeEventListener("click", handleClickTd);
   if (e.target.className === "opened") return;
   if (e.target.className === "flag") {
     e.target.className = "question";
   } else if (e.target.className === "question") {
     e.target.classList.remove("question");
-    clickFlag = true;
+    e.target.addEventListener("click", handleClickTd);
   } else {
     e.target.className = "flag";
   }
