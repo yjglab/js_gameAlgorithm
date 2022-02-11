@@ -1,1 +1,1 @@
-# JavaScript mini program algorithm. personal solution.
+# JavaScript simple program algorithm. personal solution.
