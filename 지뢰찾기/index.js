@@ -73,6 +73,7 @@ const additionalOpenCheck = (rowIdx, colIdx) => {
   }
   if (number === 0) {
     td.classList = "opened";
+    td.textContent = ""; // 깃발이나 물음표 표시한 것 지워주기 위함
     additionalOpenCheck(rowIdx - 1, colIdx);
     additionalOpenCheck(rowIdx + 1, colIdx);
     additionalOpenCheck(rowIdx, colIdx - 1);
@@ -89,7 +90,6 @@ const handleClickTd = (e) => {
   const colIdx = e.target.cellIndex;
   if (dataTable[rowIdx][colIdx] === true) {
     // 마인이라면
-    e.target.textContent = "X";
     $result.textContent = "게임오버";
     // 모든 마인 디스플레이
     for (let i = 0; i < row; i++) {
@@ -97,7 +97,7 @@ const handleClickTd = (e) => {
         if (dataTable[i][j] === true) {
           const td = $tbody.querySelectorAll("tr")[i].querySelectorAll("td")[j];
           td.className = "opened";
-          td.textContent = "X";
+          td.textContent = "💥";
           td.style.color = "red";
         }
       }
@@ -114,7 +114,7 @@ const handleClickTd = (e) => {
     e.target.textContent = minesNumber;
     e.target.className = "opened";
   } else if (minesNumber === 0) {
-    // 빈칸이라면 dfs실행
+    // 빈칸이라면 탐색 실행
     e.target.className = "opened";
     additionalOpenCheck(rowIdx - 1, colIdx);
     additionalOpenCheck(rowIdx + 1, colIdx);
@@ -128,11 +128,14 @@ const handleClickContextMenu = (e) => {
   if (e.target.className === "opened") return;
   if (e.target.className === "flag") {
     e.target.className = "question";
+    e.target.textContent = "❔";
   } else if (e.target.className === "question") {
+    e.target.textContent = "";
     e.target.classList.remove("question");
     e.target.addEventListener("click", handleClickTd);
   } else {
     e.target.className = "flag";
+    e.target.textContent = "🚩";
   }
 };
 $tds.forEach((td) => td.addEventListener("click", handleClickTd));
