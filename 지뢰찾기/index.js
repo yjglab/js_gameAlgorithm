@@ -3,6 +3,7 @@ const $result = document.querySelector(".result");
 const mineCnt = 10;
 const row = 10;
 const col = 10;
+let opened = 0;
 // 데이터 테이블 생성
 const dataTableLinear = Array(row * col).fill(false); // 랜덤 위치 넣을 1차원 배열
 const candidate = Array(row * col)
@@ -26,11 +27,11 @@ for (let i = 0; i < row; i++) {
   const $tr = document.createElement("tr");
   for (let j = 0; j < col; j++) {
     const $td = document.createElement("td");
-    // if (dataTable[i][j] === true) {
-    //   // 끝나고 지우기 (마인확인용)
-    //   $td.textContent = "X";
-    //   $td.style.color = "red";
-    // }
+    if (dataTable[i][j] === true) {
+      // 끝나고 지우기 (마인확인용)
+      $td.textContent = "X";
+      $td.style.color = "red";
+    }
     $tr.appendChild($td);
   }
   $tbody.appendChild($tr);
@@ -70,6 +71,7 @@ const additionalOpenCheck = (rowIdx, colIdx) => {
   if (number > 0) {
     td.textContent = number;
     td.classList = "opened";
+    opened++;
   }
   if (number === 0) {
     td.classList = "opened";
@@ -78,6 +80,7 @@ const additionalOpenCheck = (rowIdx, colIdx) => {
     additionalOpenCheck(rowIdx + 1, colIdx);
     additionalOpenCheck(rowIdx, colIdx - 1);
     additionalOpenCheck(rowIdx, colIdx + 1);
+    opened++;
     return;
   }
   return;
@@ -113,14 +116,17 @@ const handleClickTd = (e) => {
     // 마인 개수 감지가 된다면
     e.target.textContent = minesNumber;
     e.target.className = "opened";
+    opened++;
   } else if (minesNumber === 0) {
     // 빈칸이라면 탐색 실행
     e.target.className = "opened";
+    opened++;
     additionalOpenCheck(rowIdx - 1, colIdx);
     additionalOpenCheck(rowIdx + 1, colIdx);
     additionalOpenCheck(rowIdx, colIdx - 1);
     additionalOpenCheck(rowIdx, colIdx + 1);
   }
+  if (opened === row * col - mineCnt) setTimeout(() => alert("성공"), 500);
 };
 const handleClickContextMenu = (e) => {
   e.preventDefault();
