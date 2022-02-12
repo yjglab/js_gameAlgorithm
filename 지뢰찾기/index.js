@@ -27,11 +27,11 @@ for (let i = 0; i < row; i++) {
   const $tr = document.createElement("tr");
   for (let j = 0; j < col; j++) {
     const $td = document.createElement("td");
-    if (dataTable[i][j] === true) {
-      // 끝나고 지우기 (마인확인용)
-      $td.textContent = "X";
-      $td.style.color = "red";
-    }
+    // if (dataTable[i][j] === true) {
+    //   // 끝나고 지우기 (마인확인용)
+    //   $td.textContent = "X";
+    //   $td.style.color = "red";
+    // }
     $tr.appendChild($td);
   }
   $tbody.appendChild($tr);
