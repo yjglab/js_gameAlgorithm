@@ -17,6 +17,13 @@ const init = () => {
     $fragment.appendChild($tr);
   });
   $table.appendChild($fragment);
+
+  // cat or bomb 보이기
+  display();
 };
+function display() {
+  // 캣 4, 봄 1 비율 어레이
+  const itemsArray = ["catup.jpg", "catup.jpg", "catup.jpg", "bomb.jpg"];
+}
 // $button.addEventListener("click", init);
 init();
