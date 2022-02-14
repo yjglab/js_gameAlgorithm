@@ -2,10 +2,17 @@ const $button = document.querySelector("button");
 const $time = document.querySelector(".time");
 const $table = document.querySelector("table");
 const $score = document.querySelector(".score");
-let time = 1;
+const $life = document.querySelector(".life");
+let time = 60;
+let score = 0;
+let life = 5;
 const init = () => {
+  $button.remove();
+  $score.textContent = `잡은 고양이 수 : ${score}`;
+  $life.textContent = `라이프: ${life}`;
+  $time.textContent = `남은 시간 : ${time}`;
   setInterval(() => {
-    $time.textContent = time++;
+    $time.textContent = `남은 시간 : ${--time}`;
   }, 1000);
   const $fragment = document.createDocumentFragment();
   [1, 2, 3].forEach((v, i) => {
@@ -21,17 +28,26 @@ const init = () => {
   // cat or bomb 보이기
   display();
 };
-
+function removeItems(item) {
+  // 시간 지나면 제거
+  setTimeout(() => {
+    if (!item.querySelector("img")) return;
+    item.querySelector("img").classList = "down";
+  }, 1500);
+  setTimeout(() => {
+    item.querySelector("img")?.remove();
+  }, 1700);
+}
 function display() {
-  // 캣 4, 봄 1 비율 어레이
+  // 캣 5, 봄 2 비율 어레이
   const $td = document.querySelectorAll("td");
-  console.log($td);
   const itemsArray = [
     "catup.jpg",
     "catup.jpg",
     "catup.jpg",
     "catup.jpg",
     "catup.jpg",
+    "bombup.jpg",
     "bombup.jpg",
   ];
   setInterval(() => {
@@ -43,25 +59,46 @@ function display() {
         $td[randomIdx].innerHTML = `<img src=${randomItemImg} title="cat" />`;
         setTimeout(() => {
           $td[randomIdx].querySelector("img").classList.add("up");
-        }, 0);
+        }, 1);
+        removeItems($td[randomIdx]);
       } else if (randomItemImg === "bombup.jpg") {
         $td[randomIdx].innerHTML = `<img src=${randomItemImg} title="bomb" />`;
         setTimeout(() => {
           $td[randomIdx].querySelector("img").classList.add("up");
-        }, 0);
+        }, 1);
+        removeItems($td[randomIdx]);
       }
     }
+    // if (time === 0) {
+    //   alert(`성공! 총 ${score}마리의 고양이를 잡았습니다`);
+    //   location.reload();
+    // }
   }, 1000);
   $table.addEventListener("click", handleClickItems);
 }
 function handleClickItems(e) {
-  console.log(e.target);
   if (e.target.title === "cat") {
-    e.target.classList = "down";
+    e.target.src = "catdown.jpg";
+    $score.textContent = `잡은 고양이 수: ${(score += 1)}`;
+    setTimeout(() => {
+      e.target.classList = "down";
+    }, 500);
     setTimeout(() => {
       e.target.remove();
+    }, 700);
+  } else if (e.target.title === "bomb") {
+    e.target.src = "bombdown.jpg";
+    $life.textContent = `라이프: ${--life}`;
+    if (life === 0) {
+      alert("실패!");
+      location.reload();
+    }
+    setTimeout(() => {
+      e.target.classList = "down";
     }, 500);
+    setTimeout(() => {
+      e.target.remove();
+    }, 700);
   }
 }
-// $button.addEventListener("click", init);
-init();
+$button.addEventListener("click", init);
