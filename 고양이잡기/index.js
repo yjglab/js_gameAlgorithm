@@ -73,7 +73,7 @@ function display() {
     //   alert(`성공! 총 ${score}마리의 고양이를 잡았습니다`);
     //   location.reload();
     // }
-  }, 1000);
+  }, 550);
   $table.addEventListener("click", handleClickItems);
 }
 function handleClickItems(e) {
