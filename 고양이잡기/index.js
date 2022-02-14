@@ -69,10 +69,10 @@ function display() {
         removeItems($td[randomIdx]);
       }
     }
-    // if (time === 0) {
-    //   alert(`성공! 총 ${score}마리의 고양이를 잡았습니다`);
-    //   location.reload();
-    // }
+    if (time === 0) {
+      alert(`성공! 총 ${score}마리의 고양이를 잡았습니다`);
+      location.reload();
+    }
   }, 550);
   $table.addEventListener("click", handleClickItems);
 }
