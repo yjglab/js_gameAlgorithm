@@ -79,23 +79,26 @@ function display() {
 function handleClickItems(e) {
   if (e.target.title === "cat") {
     e.target.src = "catdown.jpg";
-    $score.textContent = `잡은 고양이 수: ${(score += 1)}`;
+    if (!e.target.classList.contains("down"))
+      $score.textContent = `잡은 고양이 수: ${++score}`;
+
     setTimeout(() => {
       e.target.classList = "down";
-    }, 500);
+    }, 0);
     setTimeout(() => {
       e.target.remove();
     }, 700);
   } else if (e.target.title === "bomb") {
     e.target.src = "bombdown.jpg";
-    $life.textContent = `라이프: ${--life}`;
+    if (!e.target.classList.contains("down"))
+      $life.textContent = `라이프: ${--life}`;
     if (life === 0) {
       alert("실패!");
       location.reload();
     }
     setTimeout(() => {
       e.target.classList = "down";
-    }, 500);
+    }, 0);
     setTimeout(() => {
       e.target.remove();
     }, 700);
